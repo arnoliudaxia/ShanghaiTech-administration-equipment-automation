@@ -1,0 +1,9 @@
+xlsx/*
+src/*
+build/*
+*.spec
+.vscode/*
+.idea/*
+*.xlsx
+
+v2/__pycache__/

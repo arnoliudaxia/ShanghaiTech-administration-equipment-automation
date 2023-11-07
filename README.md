@@ -1,3 +1,7 @@
+<div align="center">
+<img src="assets/image/logo.JPG"></img>
+</div>
+
 # 有关资产价值求和与数据格式化问题的解决方案
 ## 1. 有关资产价值求和
 代码在本文档根目录下的'calc_sum.py'文件中，运行方式为：
