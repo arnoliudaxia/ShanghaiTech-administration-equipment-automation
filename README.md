@@ -1,6 +1,10 @@
 <div align="center">
-<img src="assets/image/logo.JPG"></img>
+<img src="assets/image/logo.JPG" width="300"></img>
 </div>
+
+第一代程序（tk框架）由[Q-M-D](https://github.com/Q-M-D)制作。
+
+第二代程序考虑到行政老师电脑孱弱的性能，于是利用strealit框架将计算部分上云，同时重写了后端逻辑，由[Arnoliu](https://github.com/arnoliudaxia)制作。
 
 # 有关资产价值求和与数据格式化问题的解决方案
 ## 1. 有关资产价值求和
@@ -56,5 +60,5 @@
 
 # contributors
 
-| [<img src="https://github.com/Q-M-D.png" width="100px;"/><br /><sub>Q-M-D</sub>](https://github.com/Q-M-D) | [<img src="https://github.com/arnoliudaxia.png" width="100px;"/><br /><sub>arnoliudaxia</sub>](https://github.com/arnoliudaxia) | 
-| :---: | :---: |
+| [<img src="https://github.com/arnoliudaxia.png" width="100px;"/><br /><sub>arnoliudaxia</sub>](https://github.com/arnoliudaxia) | [<img src="https://github.com/Q-M-D.png" width="100px;"/><br /><sub>Q-M-D</sub>](https://github.com/Q-M-D) |
+|:-------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|

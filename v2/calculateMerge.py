@@ -8,7 +8,9 @@ def get_current_datetime():
     return formatted_datetime
 
 
-def process(filepath:str,outputPath:str):
+def process(filepath:str,outputPath:str)->str:
+    errorLog=""
+
     wb = openpyxl.load_workbook(filepath)
     ws = wb.active
 
@@ -53,6 +55,7 @@ def process(filepath:str,outputPath:str):
         if ws.cell(row=i, column=isExtra).value == "是":
             parentAsset = ws.cell(row=i, column=parentIndex).value  # 我的父资产编号
             if parentAsset not in parentAssetTable:
+                errorLog+=f'子资产没有找到对应的父资产{parentAsset}!!\n'
                 logging.error(f'子资产没有找到对应的父资产{parentAsset}!!')
                 continue
             mergedValue = ws.cell(row=parentAssetTable[parentAsset], column=calculatedValueIndex).value + ws.cell(row=i,
@@ -63,3 +66,4 @@ def process(filepath:str,outputPath:str):
             ws.cell(row=i, column=calculatedValueIndex, value=0)
 
     wb.save(outputPath)
+    return errorLog
