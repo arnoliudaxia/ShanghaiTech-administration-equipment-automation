@@ -52,3 +52,9 @@
 在当前目录下运行
 ```pyinstaller -F -W -i logo.JPG QRcustom.py```
 其中`QRcustom.py`为需要打包的python文件，`logo.JPG`为打包后的exe文件的图标，`-F`表示打包为单个exe文件，`-i`表示指定exe文件的图标,'-w'表示不显示命令行窗口（默认不写）。
+
+
+# contributors
+
+| [<img src="https://github.com/Q-M-D.png" width="100px;"/><br /><sub>Q-M-D</sub>](https://github.com/Q-M-D) | [<img src="https://github.com/arnoliudaxia.png" width="100px;"/><br /><sub>arnoliudaxia</sub>](https://github.com/arnoliudaxia) | 
+| :---: | :---: |
