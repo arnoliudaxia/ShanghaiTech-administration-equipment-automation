@@ -33,10 +33,7 @@ if uploaded_file is not None:
 
     with st.chat_message("ai"):
         if not st.session_state["isprocessed"]:
-            if errlog != "":
-                st.write("处理过程中出现了一些错误，详情如下：")
-                for e in errlog.split("\n"):
-                    st.error(e)
+
             st.write("处理完成，点击下载处理后的表格")
             st.session_state["isprocessed"] = True
 
@@ -46,6 +43,10 @@ if uploaded_file is not None:
                     data=file,
                     file_name=uploaded_file.name
                 )
+            if errlog != "":
+                st.write("注意处理过程中出现了一些错误，详情如下：")
+                for e in errlog.split("\n"):
+                    st.error(e)
         else:
             st.write("流程结束！")
             st.session_state["isuploaded"]=False
