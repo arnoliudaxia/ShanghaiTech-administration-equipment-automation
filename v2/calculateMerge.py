@@ -27,7 +27,7 @@ def process(filepath:str,outputPath:str)->str:
         # 如果已经存在的话就覆盖重新算一次
         calculatedValueIndex = keywordTable["合并后资产价值"]
     ws.cell(row=1, column=calculatedValueIndex, value="合并后资产价值")
-    for i in range(2, rowNumber):
+    for i in range(2, rowNumber+1):
         myValue = ws.cell(row=i, column=keywordTable["单价/元"]).value
         ws.cell(row=i, column=calculatedValueIndex, value=myValue)
 
@@ -36,13 +36,13 @@ def process(filepath:str,outputPath:str)->str:
     parentIndex = keywordTable["父资产编号"]
     AssetIndex = keywordTable["资产编号"]
     # 这个循环找到所有的负资产
-    for i in range(2, rowNumber):
+    for i in range(2, rowNumber+1):
         cellValue = ws.cell(row=i, column=parentIndex).value
         if cellValue not in parentAssetSet:
             parentAssetSet.add(cellValue)
 
     # 记录所有负资产的行号
-    for i in range(2, rowNumber):
+    for i in range(2, rowNumber+1):
         cellValue: str = str(ws.cell(row=i, column=AssetIndex).value)
         # 如果是-1这种的要把后缀全部忽略掉
         # if "-" in cellValue:
@@ -51,7 +51,7 @@ def process(filepath:str,outputPath:str)->str:
             parentAssetTable[cellValue] = i
     ## 然后找到所有「是否为配件/增值」为「是」的配件
     isExtra = keywordTable["是否为配件/增值"]
-    for i in range(2, rowNumber):
+    for i in range(2, rowNumber+1):
         if ws.cell(row=i, column=isExtra).value == "是":
             parentAsset = ws.cell(row=i, column=parentIndex).value  # 我的父资产编号
             if parentAsset not in parentAssetTable:
