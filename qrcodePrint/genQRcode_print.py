@@ -142,7 +142,10 @@ def add_margins(qr_code,datadf,i):
     M,N = qr_code.size
     qr_code=imgAddFont_up(qr_code,M,N)
     M,N = qr_code.size
-    qr_code=imgAddFont_bottom(qr_code,M,N,str(datadf['资产编码'][i]),datadf['资产名称'][i],note=datadf['备注'][i],caiwu=str(datadf['财政资产编号'][i]))
+    caizhengzichanbianhao=str(datadf['财政资产编号'][i])
+    if caizhengzichanbianhao=="nan":
+        caizhengzichanbianhao=""
+    qr_code=imgAddFont_bottom(qr_code,M,N,str(datadf['资产编码'][i]),datadf['资产名称'][i],note=datadf['备注'][i],caiwu=caizhengzichanbianhao)
     return qr_code
  
 def upload_file():
