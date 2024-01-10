@@ -1,2 +1,7 @@
 openpyxl
 streamlit
+Pillow==9.5.0
+pyinstaller
+pandas
+qrcode
+# pypi32 if win7
