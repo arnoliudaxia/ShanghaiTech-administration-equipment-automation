@@ -5,3 +5,4 @@ pyinstaller
 pandas
 qrcode
 # pypi32 if win7
+pywin32
