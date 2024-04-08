@@ -1,5 +1,5 @@
 import time
-
+import os
 import streamlit as st
 from calculateMerge import process,get_current_datetime
 
@@ -52,12 +52,9 @@ if uploaded_file is not None:
             st.session_state["isuploaded"]=False
             st.session_state["isprocessed"]=False
             st.write("点击上传文件右侧的叉叉来重新开始！")
-# if st.session_state["isprocessed"]:
-#     with st.chat_message("user"):
-#         if st.button("重新开始(按两次)"):
-#             st.session_state["isuploaded"]=False
-#             st.session_state["isprocessed"]=False
 
+    # 清理本地临时文件
+    os.remove('upload/' + uploaded_file.name) 
 
 
 ######处理阶段#####
