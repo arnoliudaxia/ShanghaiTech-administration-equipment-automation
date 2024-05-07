@@ -37,9 +37,10 @@ def process(filepath:str,outputPath:str)->str:
     AssetIndex = keywordTable["资产编号"]
     # 这个循环找到所有的负资产
     for i in range(2, rowNumber+1):
-        cellValue = ws.cell(row=i, column=parentIndex).value
+        cellValue = str(ws.cell(row=i, column=parentIndex).value)
         if cellValue not in parentAssetSet:
             parentAssetSet.add(cellValue)
+    logging.info(f"搜集到{len(parentAssetSet)}个父资产")
 
     # 记录所有负资产的行号
     for i in range(2, rowNumber+1):

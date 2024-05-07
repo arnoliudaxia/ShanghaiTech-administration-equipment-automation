@@ -12,7 +12,6 @@ if "isprocessed" not in st.session_state:
 # endregion
 
 with st.chat_message("ai"):
-    # st.write("请上传要「合并计算资产」的表格")
     uploaded_file = st.file_uploader(label="请上传要「合并计算资产」的表格")
 
 if uploaded_file is not None:

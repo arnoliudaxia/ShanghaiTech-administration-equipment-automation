@@ -12,7 +12,7 @@
 ## 1. 资产价值求和程序
 
 ```
-python v2/server.py
+streamlit run v2/server.py
 ```
 
 ## 2. 打印标签
