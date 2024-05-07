@@ -54,7 +54,7 @@ def process(filepath:str,outputPath:str)->str:
     isExtra = keywordTable["是否为配件/增值"]
     for i in range(2, rowNumber+1):
         if ws.cell(row=i, column=isExtra).value == "是":
-            parentAsset = ws.cell(row=i, column=parentIndex).value  # 我的父资产编号
+            parentAsset = str(ws.cell(row=i, column=parentIndex).value)  # 我的父资产编号
             if parentAsset not in parentAssetTable:
                 errorLog+=f'子资产没有找到对应的父资产{parentAsset}!!\n'
                 logging.error(f'子资产没有找到对应的父资产{parentAsset}!!')
@@ -65,6 +65,9 @@ def process(filepath:str,outputPath:str)->str:
                                                                                                                       "单价/元"]).value
             ws.cell(row=parentAssetTable[parentAsset], column=calculatedValueIndex, value=mergedValue)
             ws.cell(row=i, column=calculatedValueIndex, value=0)
-
-    wb.save(outputPath)
+    if outputPath:
+        wb.save(outputPath)
     return errorLog
+
+if __name__ == '__main__':
+    process(r"D:\21321.xlsx")
