@@ -8,7 +8,7 @@ def get_current_datetime():
     return formatted_datetime
 
 
-def process(filepath:str,outputPath:str)->str:
+def process(filepath:str,outputPath=None)->str:
     errorLog=""
 
     wb = openpyxl.load_workbook(filepath)
