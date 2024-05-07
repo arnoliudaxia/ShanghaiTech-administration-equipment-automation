@@ -1,7 +1,7 @@
 import openpyxl
 import logging
 from datetime import datetime
-
+logging.basicConfig(level=logging.INFO)
 def get_current_datetime():
     now = datetime.now()
     formatted_datetime = now.strftime("%m%d-%H%M%S")
