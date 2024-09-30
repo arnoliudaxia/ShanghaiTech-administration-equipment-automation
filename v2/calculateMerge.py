@@ -59,10 +59,7 @@ def process(filepath:str,outputPath=None)->str:
                 errorLog+=f'子资产没有找到对应的父资产{parentAsset}!!\n'
                 logging.error(f'子资产没有找到对应的父资产{parentAsset}!!')
                 continue
-            mergedValue = ws.cell(row=parentAssetTable[parentAsset], column=calculatedValueIndex).value + ws.cell(row=i,
-                                                                                                                  column=
-                                                                                                                  keywordTable[
-                                                                                                                      "单价/元"]).value
+            mergedValue = ws.cell(row=parentAssetTable[parentAsset], column=calculatedValueIndex).value + ws.cell(row=i,column=keywordTable["单价/元"]).value
             ws.cell(row=parentAssetTable[parentAsset], column=calculatedValueIndex, value=mergedValue)
             ws.cell(row=i, column=calculatedValueIndex, value=0)
     if outputPath:

@@ -9,3 +9,4 @@ build/*
 v2/__pycache__/
 
 dist/
+venv/
