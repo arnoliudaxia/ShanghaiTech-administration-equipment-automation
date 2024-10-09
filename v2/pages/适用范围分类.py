@@ -3,7 +3,7 @@ import os
 import streamlit as st
 from groupEqu import process,get_current_datetime
 
-st.title("适用范围分类v0.1")
+st.title("适用范围分类v0.2")
 # region 初始化持久变量
 if "isuploaded" not in st.session_state:
     st.session_state["isuploaded"]=False
