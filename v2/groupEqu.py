@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-
+import pandas as pd
 import openpyxl
 from tqdm import tqdm
 
@@ -23,99 +23,42 @@ def process(filepath: str, outputPath=None) -> str:
     logging.info(f"处理{filepath}, 导出到{outputPath}")
     errorLog = ""
 
-    wb = openpyxl.load_workbook(filepath)
-    ws = wb.active
-    logging.info("已加载表格")
+    # 读取Excel文件
+    df = pd.read_excel(filepath)
 
-    # Create a mapping from column headers to their indices
-    keywordTable = {}
-    rowNumber = ws.max_row
-    keywordRow = ws[1]
-    for index in range(len(keywordRow)):
-        keywordTable[keywordRow[index].value] = index + 1
-    logging.info("已读取表头")
-
-    # Check if "适用范围" exists in the headers
-    if "适用范围" not in keywordTable:
-        errorLog = f'Error: "适用范围" column not found in the provided Excel file.'
-        return errorLog
+    # 过滤数据，假设 "适用范围" 和 "是否为配件/增值" 是要过滤的列
+    filterSet = df[df["是否为配件/增值"] == "否"]["适用范围"].unique()
 
 
-    # 记录父资产编号的行号映射， 这样在找父资产的时候能快一点
-    asset_number_to_row = {ws.cell(row=i, column=keywordTable["资产编号"]).value: i for i in
-                           range(2, rowNumber + 1)}
 
-    logging.info("已建立资产编号哈希表")
+    # 创建新Excel文件，逐个将过滤后的数据写入
+    with pd.ExcelWriter(outputPath) as writer:
+        for filter_value in filterSet:
+            print(f"筛选{filter_value}")
+            # 1. 筛选出 "是否为配件/增值" 为 "否" 且 "适用范围" 满足条件的行
+            filtered_data = df[(df["是否为配件/增值"] == "否") & (df["适用范围"] == filter_value)]
+            print('筛选出 "是否为配件/增值" 为 "否" 且 "适用范围" 满足条件的行 个数为'+str(len(filtered_data)))
 
-    # 遍历列 keywordTable["适用范围"]
-    applicable_range_column = [str(cell[0]) for cell in
-                               ws.iter_rows(min_row=2, max_row=rowNumber, min_col=keywordTable["适用范围"],
-                                            max_col=keywordTable["适用范围"], values_only=True)]
-    is_peijian_column = [cell[0] for cell in
-                         ws.iter_rows(min_row=2, max_row=rowNumber, min_col=keywordTable["是否为配件/增值"],
-                                      max_col=keywordTable["是否为配件/增值"], values_only=True)]
-    parent_asset_number_column = [str(cell[0]) for cell in
-                                  ws.iter_rows(min_row=2, max_row=rowNumber, min_col=keywordTable["父资产编号"],
-                                               max_col=keywordTable["父资产编号"], values_only=True)]
-    logging.info("已读取最重要的三列数据")
+            # 2. 对于 "是否为配件/增值" 为 "是" 的行，找到其 "父资产编号"
+            for index, row in df[df["是否为配件/增值"] == "是"].iterrows():
+                # 找到当前行的 "父资产编号"
+                parent_asset_number = row["父资产编号"]
 
-    copyMap = {}
+                # 找到 "资产编号" 是这个 "父资产编号" 的那一行
+                parent_row = df[df["资产编号"] == str(int(parent_asset_number))]
 
-    def filterOne(filter):
-        # 创建一个sheet，名称为filter
-        filtered_sheet = wb.create_sheet(title=filter)
-        # Copy the header row to the new sheet
-        for col in range(1, ws.max_column + 1):
-            filtered_sheet.cell(row=1, column=col, value=ws.cell(row=1, column=col).value)
+                # 如果找到该父资产，且父资产的 "适用范围" == filter_value
+                if not parent_row.empty and parent_row["适用范围"].values[0] == filter_value:
+                    # 把当前 "是否为配件/增值" 为 "是" 的行也加入过滤结果
+                    filtered_data = pd.concat([filtered_data, pd.DataFrame([row])], ignore_index=True)
 
-        # 过滤和复制数据
-        filtered_row_index = 1  # 记录新sheet的行号
-        for i in tqdm(range(rowNumber - 1), desc=f'Filtering for {filter}'):
-            cellValue = applicable_range_column[i]
-            isPeijian = is_peijian_column[i]
-            filterOut = False
+            print('总数为'+str(len(filtered_data)))
 
-            if filter in cellValue and isPeijian == "否":
-                filterOut = True
-
-            if isPeijian == "是":
-                父资产编号 = parent_asset_number_column[i]
-                parent_row = asset_number_to_row.get(父资产编号)
-                if parent_row:
-                    parent_range_value = applicable_range_column[parent_row]
-                    if filter in parent_range_value:
-                        filterOut = True
-
-            if filterOut:
-                # 复制该行到新sheet中
-                for col in range(1, ws.max_column + 1):
-                    filtered_sheet.cell(row=filtered_row_index, column=col, value=ws.cell(row=i + 2, column=col).value)
-                filtered_row_index += 1
-
-
-    # 遍历「适用范围」，获取一个set集合
-    filterSet = set()
-    for i in tqdm(range(2, rowNumber + 1), desc="Collecting filters"):
-        cellValue = str(ws.cell(row=i, column=keywordTable["适用范围"]).value)
-        isPeijian = ws.cell(row=i, column=keywordTable["是否为配件/增值"]).value
-        if isPeijian == "否":
-            filterSet.add(cellValue)
-    print(filterSet)
-
-    copyMap={filter:[] for filter in filterSet}
-
-    for filter in tqdm(filterSet, desc="Processing filters"):
-
-        filterOne(filter)
-
-    if outputPath:
-        wb.save(outputPath)
-    else:
-        wb.save(filepath)
+            filtered_data.to_excel(writer, sheet_name=str(filter_value), index=False)
 
     return errorLog
 
 
 
 if __name__ == '__main__':
-    process(filepath=r"v2/data/1000元以上历年设备对平.xlsx",outputPath="v2/data/1000元以上历年设备对平_all_1.xlsx")
+    process(filepath=r"v2/data/1000元以上历年设备对平.xlsx",outputPath="v2/data/1000元以上历年设备对平_all_11.xlsx")
